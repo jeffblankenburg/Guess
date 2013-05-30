@@ -15,15 +15,9 @@ namespace Guess
     public partial class CardPage : PhoneApplicationPage
     {
         
-        
         public CardPage()
         {
             InitializeComponent();
-        }
-
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            
         }
     }
 }
