@@ -9,12 +9,14 @@
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
-    SupportedOrientations="Landscape" Orientation="Landscape"
+    SupportedOrientations="Landscape" Orientation="LandscapeLeft"
     mc:Ignorable="d">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
-        <Rectangle x:Name="VideoSource" />
+        <Rectangle x:Name="ViewfinderRectangle" />
+        <Image Source="Images/VideoFilters/blueswirls.jpg" Stretch="UniformToFill" Opacity=".3" />
+        <TextBlock x:Name="TextValue" Text="Hold phone on your forehead" TextWrapping="Wrap" FontSize="110" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" />
     </Grid>
 
 </phone:PhoneApplicationPage>

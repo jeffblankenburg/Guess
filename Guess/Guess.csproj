@@ -98,6 +98,13 @@
     <Content Include="Images\GameType\FameGame.jpg" />
     <Content Include="Images\GameType\GoToTheZoo.jpg" />
     <Content Include="Images\GameType\SingMeASong.jpg" />
+    <Content Include="Images\VideoFilters\rainbow.jpg" />
+    <Content Include="Images\VideoFilters\flowers.jpg" />
+    <Resource Include="Images\VideoFilters\gray.gif" />
+    <Content Include="Images\VideoFilters\green.jpg" />
+    <Content Include="Images\VideoFilters\blueswirls.jpg" />
+    <Content Include="Images\VideoFilters\circles.jpg" />
+    <Resource Include="Images\VideoFilters\yellow.gif" />
     <Content Include="SplashScreenImage.jpg" />
   </ItemGroup>
   <ItemGroup />
