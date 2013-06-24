@@ -15,6 +15,10 @@ namespace Guess
     public partial class CardPage : PhoneApplicationPage
     {
         bool IsGameRunning = false;
+        GameType gt;
+        int[] used = new int[20];
+        int CurrentGameType;
+        int usedCounter = 0;
         CaptureSource captureSource;
         FileSink fileSink;
         VideoCaptureDevice videoCaptureDevice;
@@ -30,33 +34,69 @@ namespace Guess
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
+            CurrentGameType = Int32.Parse(NavigationContext.QueryString["game"]);
             OrientationChanged += CardPage_OrientationChanged;
+            CountdownTimer.Completed += CountdownTimer_Completed;
+        }
+
+        void CountdownTimer_Completed(object sender, EventArgs e)
+        {
+            Countdown();
         }
 
         void CardPage_OrientationChanged(object sender, OrientationChangedEventArgs e)
         {
             PageOrientation orientation = e.Orientation;
-            TextValue.Text = orientation.ToString();
-            //if (IsGameRunning)
-            //{
-            //    if (orientation == PageOrientation.LandscapeLeft)
-            //    {
-            //        string r = null;
-            //    }
-            //}
-            //else
-            //{
-            //    if (orientation == PageOrientation.Landscape)
-            //    {
-            //        StartGame();
-            //    }
-            //}
+            //TextValue.Text = orientation.ToString();
+            if (IsGameRunning)
+            {
+                
+            }
+            else
+            {
+                if (orientation == PageOrientation.LandscapeRight || orientation == PageOrientation.LandscapeLeft)
+                {
+                    Countdown();
+                }
+            }
+        }
+
+        private void Countdown()
+        {
+            TextValue.Opacity = 0;
+            int x = Int32.Parse(CountdownText.Text) - 1;
+            CountdownText.Text = x.ToString();
+            if (x > 0)
+            {
+                CountdownTimer.Begin();
+            }
+            else
+            {
+                IsGameRunning = true;
+                StartGame();
+            }
+
         }
 
         private void StartGame()
         {
-            TextValue.Text = "3";
+            TextValue.Opacity = 1;
+            SelectTerm();
+        }
+
+        private void SelectTerm()
+        {
+            Random r = new Random();
+            gt = (GameType)App.GameTypeList[CurrentGameType];
+            int total = gt.Cards.Count;
+            int random = r.Next(0, total-1);
+            if (used.Contains(random)) SelectTerm();
+            else
+            {
+                TextValue.Text = gt.Cards[random];
+                used[usedCounter] = random;
+                usedCounter++;
+            }
         }
 
         private void InitializeVideoRecorder()
