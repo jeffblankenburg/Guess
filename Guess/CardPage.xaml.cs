@@ -17,8 +17,12 @@ namespace Guess
     {
         Accelerometer accel;
         bool IsGameRunning = false;
+        bool IsTipped = false;
+        bool IsCorrect = false;
+        bool IsWrong = false;
+        bool IsCountdownRunning = false;
         GameType gt;
-        int[] used = new int[20];
+        int[] used = new int[50];
         int CurrentGameType;
         int usedCounter = 0;
         CaptureSource captureSource;
@@ -36,11 +40,29 @@ namespace Guess
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            OrientationChanged += CardPage_OrientationChanged;
             CurrentGameType = Int32.Parse(NavigationContext.QueryString["game"]);
             CountdownTimer.Completed += CountdownTimer_Completed;
+            CorrectShow.Completed += CorrectShow_Completed;
             accel = new Accelerometer();
             accel.CurrentValueChanged += accel_CurrentValueChanged;
             accel.Start();
+        }
+
+        void CardPage_OrientationChanged(object sender, OrientationChangedEventArgs e)
+        {
+            //switch (e.Orientation)
+            //{
+            //    case PageOrientation.LandscapeLeft:
+            //        rotator.Angle = 180;
+            //        break;
+            //}  
+
+        }
+
+        void CorrectShow_Completed(object sender, EventArgs e)
+        {
+            
         }
 
         void accel_CurrentValueChanged(object sender, SensorReadingEventArgs<AccelerometerReading> e)
@@ -53,22 +75,45 @@ namespace Guess
             //TextValue.Text = "X=" + e.SensorReading.Acceleration.X.ToString() + "\nY=" + e.SensorReading.Acceleration.Y.ToString() + "\nZ=" + e.SensorReading.Acceleration.Z.ToString();
             if (!IsGameRunning)
             {
-                if (e.SensorReading.Acceleration.X > 0.98)
+                if (((e.SensorReading.Acceleration.X > 0.98) || (e.SensorReading.Acceleration.X < -0.98)) && (!IsCountdownRunning))
                 {
+                    IsCountdownRunning = true;
                     Countdown();
                 }
             }
             else
             {
-                if ((e.SensorReading.Acceleration.X < .1) && (e.SensorReading.Acceleration.Z > 0))
+                //Phone is flat, face down, confirming correct answer.
+                if ((e.SensorReading.Acceleration.X < .1) && (e.SensorReading.Acceleration.Z > 0.9))
                 {
-                    SelectTerm();
+                    IsTipped = true;
+                    IsCorrect = true;
                 }
-                else if ((e.SensorReading.Acceleration.X < .1) && (e.SensorReading.Acceleration.Z > 0))
+                //Phone is flat, face up, confirming wrong answer.
+                else if ((e.SensorReading.Acceleration.X < .1) && (e.SensorReading.Acceleration.Z < -0.9))
                 {
-
+                    IsTipped = true;
+                    IsWrong = true;
                 }
 
+                if ((e.SensorReading.Acceleration.X > 0.98) && (IsTipped))
+                {
+                    IsTipped = false;
+                    if (IsCorrect)
+                    {
+                        IsCorrect = false;
+                        CorrectShow.Begin();
+                        SelectTerm();
+                        //TODO: Show confirmation that the correct answer was spoken.
+                    }
+                    else if (IsWrong)
+                    {
+                        IsWrong = false;
+                        WrongShow.Begin();
+                        SelectTerm();
+                        //TODO: Show red screen indicating that the answer was wrong or skipped.
+                    }
+                }
             }
         }
 
@@ -103,7 +148,7 @@ namespace Guess
         private void SelectTerm()
         {
             Random r = new Random();
-            gt = (GameType)App.GameTypeList[CurrentGameType];
+            gt = (GameType)App.GameTypeList[CurrentGameType-1];
             int total = gt.Cards.Count;
             int random = r.Next(0, total-1);
             if (used.Contains(random)) SelectTerm();

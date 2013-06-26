@@ -107,6 +107,7 @@
     <Content Include="Images\VideoFilters\blueswirls.jpg" />
     <Content Include="Images\VideoFilters\circles.jpg" />
     <Resource Include="Images\VideoFilters\yellow.gif" />
+    <Content Include="Images\VideoFilters\red.jpg" />
     <Content Include="SplashScreenImage.jpg" />
   </ItemGroup>
   <ItemGroup />

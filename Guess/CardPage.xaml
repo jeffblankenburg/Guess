@@ -9,7 +9,7 @@
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
-    SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
+    SupportedOrientations="Landscape" Orientation="LandscapeRight"
     mc:Ignorable="d">
 	<phone:PhoneApplicationPage.Resources>
 		<Storyboard x:Name="CountdownTimer">
@@ -18,14 +18,74 @@
 				<EasingDoubleKeyFrame KeyTime="0:0:1" Value="0"/>
 			</DoubleAnimationUsingKeyFrames>
 		</Storyboard>
-	</phone:PhoneApplicationPage.Resources>
+		<Storyboard x:Name="CorrectShow">
+			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="CorrectBox">
+				<EasingDoubleKeyFrame KeyTime="0" Value="1"/>
+				<EasingDoubleKeyFrame KeyTime="0:0:1.0" Value="0.99"/>
+				<EasingDoubleKeyFrame KeyTime="0:0:1.1" Value="0.99"/>
+			</DoubleAnimationUsingKeyFrames>
+			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="CorrectBox">
+				<DiscreteObjectKeyFrame KeyTime="0">
+					<DiscreteObjectKeyFrame.Value>
+						<Visibility>Visible</Visibility>
+					</DiscreteObjectKeyFrame.Value>
+				</DiscreteObjectKeyFrame>
+				<DiscreteObjectKeyFrame KeyTime="0:0:1.0">
+					<DiscreteObjectKeyFrame.Value>
+						<Visibility>Visible</Visibility>
+					</DiscreteObjectKeyFrame.Value>
+				</DiscreteObjectKeyFrame>
+				<DiscreteObjectKeyFrame KeyTime="0:0:1.1">
+					<DiscreteObjectKeyFrame.Value>
+						<Visibility>Collapsed</Visibility>
+					</DiscreteObjectKeyFrame.Value>
+				</DiscreteObjectKeyFrame>
+			</ObjectAnimationUsingKeyFrames>
+		</Storyboard>
+        <Storyboard x:Name="WrongShow">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="WrongBox">
+                <EasingDoubleKeyFrame KeyTime="0" Value="1"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1.0" Value="0.99"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1.1" Value="0.99"/>
+            </DoubleAnimationUsingKeyFrames>
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="WrongBox">
+                <DiscreteObjectKeyFrame KeyTime="0">
+                    <DiscreteObjectKeyFrame.Value>
+                        <Visibility>Visible</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                </DiscreteObjectKeyFrame>
+                <DiscreteObjectKeyFrame KeyTime="0:0:1.0">
+                    <DiscreteObjectKeyFrame.Value>
+                        <Visibility>Visible</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                </DiscreteObjectKeyFrame>
+                <DiscreteObjectKeyFrame KeyTime="0:0:1.1">
+                    <DiscreteObjectKeyFrame.Value>
+                        <Visibility>Collapsed</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                </DiscreteObjectKeyFrame>
+            </ObjectAnimationUsingKeyFrames>
+        </Storyboard>
+    </phone:PhoneApplicationPage.Resources>
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.RenderTransform>
+            <RotateTransform x:Name="rotator" CenterX=".5" CenterY=".5"/>
+        </Grid.RenderTransform>
+
         <Rectangle x:Name="ViewfinderRectangle" />
         <Image Source="Images/VideoFilters/blueswirls.jpg" Stretch="UniformToFill" Opacity=".3" />
         <TextBlock x:Name="TextValue" Text="Hold phone on your forehead" TextWrapping="Wrap" FontSize="110" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" />
         <TextBlock x:Name="CountdownText" HorizontalAlignment="Center" Margin="0" Opacity="0" TextWrapping="Wrap" Text="6" VerticalAlignment="Center" FontSize="266.667" FontFamily="Segoe UI"/>
+        <Grid x:Name="CorrectBox" Visibility="Collapsed">
+        	<Image Source="Images/VideoFilters/green.jpg" Stretch="UniformToFill"/>
+        	<TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="CORRECT!" VerticalAlignment="Center" FontSize="96" TextAlignment="Center" Margin="185,176,184,176"/>
+        </Grid>
+        <Grid x:Name="WrongBox" Visibility="Collapsed">
+            <Image Source="Images/VideoFilters/red.jpg" Stretch="UniformToFill"/>
+            <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="WRONG!" VerticalAlignment="Center" FontSize="96" TextAlignment="Center" Margin="185,176,184,176"/>
+        </Grid>
     </Grid>
 
 </phone:PhoneApplicationPage>
