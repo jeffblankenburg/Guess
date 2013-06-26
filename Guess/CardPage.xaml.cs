@@ -9,11 +9,13 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using System.Windows.Media;
 using System.IO.IsolatedStorage;
+using Microsoft.Devices.Sensors;
 
 namespace Guess
 {
     public partial class CardPage : PhoneApplicationPage
     {
+        Accelerometer accel;
         bool IsGameRunning = false;
         GameType gt;
         int[] used = new int[20];
@@ -35,30 +37,44 @@ namespace Guess
         {
             base.OnNavigatedTo(e);
             CurrentGameType = Int32.Parse(NavigationContext.QueryString["game"]);
-            OrientationChanged += CardPage_OrientationChanged;
             CountdownTimer.Completed += CountdownTimer_Completed;
+            accel = new Accelerometer();
+            accel.CurrentValueChanged += accel_CurrentValueChanged;
+            accel.Start();
+        }
+
+        void accel_CurrentValueChanged(object sender, SensorReadingEventArgs<AccelerometerReading> e)
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() => AccelerometerReadingChanged(e)); 
+        }
+
+        private void AccelerometerReadingChanged(SensorReadingEventArgs<AccelerometerReading> e)
+        {
+            //TextValue.Text = "X=" + e.SensorReading.Acceleration.X.ToString() + "\nY=" + e.SensorReading.Acceleration.Y.ToString() + "\nZ=" + e.SensorReading.Acceleration.Z.ToString();
+            if (!IsGameRunning)
+            {
+                if (e.SensorReading.Acceleration.X > 0.98)
+                {
+                    Countdown();
+                }
+            }
+            else
+            {
+                if ((e.SensorReading.Acceleration.X < .1) && (e.SensorReading.Acceleration.Z > 0))
+                {
+                    SelectTerm();
+                }
+                else if ((e.SensorReading.Acceleration.X < .1) && (e.SensorReading.Acceleration.Z > 0))
+                {
+
+                }
+
+            }
         }
 
         void CountdownTimer_Completed(object sender, EventArgs e)
         {
             Countdown();
-        }
-
-        void CardPage_OrientationChanged(object sender, OrientationChangedEventArgs e)
-        {
-            PageOrientation orientation = e.Orientation;
-            //TextValue.Text = orientation.ToString();
-            if (IsGameRunning)
-            {
-                
-            }
-            else
-            {
-                if (orientation == PageOrientation.LandscapeRight || orientation == PageOrientation.LandscapeLeft)
-                {
-                    Countdown();
-                }
-            }
         }
 
         private void Countdown()
