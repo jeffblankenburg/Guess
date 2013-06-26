@@ -86,6 +86,7 @@
             <Image Source="Images/VideoFilters/red.jpg" Stretch="UniformToFill"/>
             <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="WRONG!" VerticalAlignment="Center" FontSize="96" TextAlignment="Center" Margin="185,176,184,176"/>
         </Grid>
+        <TextBlock x:Name="TimerText" HorizontalAlignment="Left" Height="53" Margin="635,0,0,0" TextWrapping="Wrap" Text="90" VerticalAlignment="Top" Width="155" TextAlignment="Right" FontSize="48" Opacity="0.495"/>
     </Grid>
 
 </phone:PhoneApplicationPage>

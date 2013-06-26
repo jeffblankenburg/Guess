@@ -10,12 +10,15 @@ using Microsoft.Phone.Shell;
 using System.Windows.Media;
 using System.IO.IsolatedStorage;
 using Microsoft.Devices.Sensors;
+using System.Windows.Threading;
 
 namespace Guess
 {
     public partial class CardPage : PhoneApplicationPage
     {
         Accelerometer accel;
+        DispatcherTimer dt = new DispatcherTimer();
+        DateTime StartTimestamp;
         bool IsGameRunning = false;
         bool IsTipped = false;
         bool IsCorrect = false;
@@ -40,6 +43,7 @@ namespace Guess
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            dt.Tick += dt_Tick;
             OrientationChanged += CardPage_OrientationChanged;
             CurrentGameType = Int32.Parse(NavigationContext.QueryString["game"]);
             CountdownTimer.Completed += CountdownTimer_Completed;
@@ -49,8 +53,18 @@ namespace Guess
             accel.Start();
         }
 
+        void dt_Tick(object sender, EventArgs e)
+        {
+            if (IsGameRunning)
+            {
+
+                TimerText.Text = (DateTime.Now - StartTimestamp).Seconds.ToString();
+            }
+        }
+
         void CardPage_OrientationChanged(object sender, OrientationChangedEventArgs e)
         {
+            this.Orientation = PageOrientation.LandscapeRight;
             //switch (e.Orientation)
             //{
             //    case PageOrientation.LandscapeLeft:
@@ -133,6 +147,8 @@ namespace Guess
             }
             else
             {
+                StartTimestamp = DateTime.Now;
+                dt.Start();
                 IsGameRunning = true;
                 StartGame();
             }
